@@ -1,0 +1,1115 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Mount Hermon - Online Student Portal</title>
+    <meta name="title" content="Mount Hermon School Darjeeling">
+    <meta name="description" content="Student's Online Portal, introduced by Mount Hermon School Darjeeling">
+
+    <script src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="icon" href="icon.png" type="image/png" style="object-fit: contain;">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plyr.io/3.5.10/plyr.polyfilled.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.5.10/plyr.css" />
+
+
+    <link rel="stylesheet" href="https://transloadit.edgly.net/releases/uppy/v1.16.1/uppy.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script> -->
+    <script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
+    <style>
+        .plyr {
+            border-radius: 3px;
+            height: 60vh;
+            width: 100%;
+            justify-content: center;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .plyr {
+                border-radius: 3px;
+                height: 30vh;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite;
+            /* Safari */
+            animation: spin 2s linear infinite;
+        }
+
+        /* Safari */
+
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        div.sticky {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            padding: 16px;
+            font-size: 20px;
+        }
+
+        /* .rendered-form{
+            color:black
+        } */
+    </style>
+</head>
+
+<body>
+    <!-- <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
+    <script src="config.js"></script>
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLongTitle">Choose an account</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="studentAccounts" class="modal-body">
+                    ...
+
+                </div>
+                <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Confirm</button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Kindly login with your details</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <!-- <label for="exampleInputEmail1">Login ID</label> -->
+                        <input class="form-control" id="inputLoginID" aria-describedby="emailHelp"
+                            placeholder="Enter your Tag Number">
+                        <small id="emailHelp" class="form-text text-muted">Your Tag No. is your unique identity</small>
+                    </div>
+                    <div class="form-group">
+                        <!-- <label for="exampleInputEmail1">Login ID</label> -->
+                        <input class="form-control" id="inputPass" aria-describedby="passHelp" placeholder="Password">
+                        <small id="passHelp" class="form-text text-muted">Your Password has already been sent to your
+                            registered phone number<br><br>If you don't know your tag number or your password then
+                            kindly contact the school management</small>
+                    </div>
+
+                </div>
+                <script>
+                    // var selectedClass = document.getElementById("selectedClass")
+                    // fetch('https://reevweb.azurewebsites.net/api/requestpost/gethttp?dbName=1011&PN=allClasses&JSONUser={"SchoolCode":1011}&JSONData={}').then(req => req.json()).then(cls => {
+
+                    //     cls.forEach(indiCS => {
+                    //         var cs = indiCS['class'] + (JSON.parse(indiCS['cards'])[0]['Sec']);
+                    //         var opt = document.createElement("option")
+                    //         opt.innerHTML = cs
+                    //         opt.value = cs
+                    //         selectedClass.appendChild(opt)
+                    //     })
+
+                    // })
+                    jQuery(function ($) {
+
+                    });
+
+                    function lgIN() {
+
+                        // var stud_tag_no = document.getElementById("inputLoginID").value;
+
+                        // localStorage.removeItem(reev_student)
+                        // student_data = {
+                        //     "stud_cs": strCS,
+                        //     "stud_name": stud_name,
+                        //     "stud_roll": stud_roll
+                        // }
+
+                        // localStorage.setItem(reev_student, JSON.stringify(student_data))
+                        handleSignedInUser();
+
+
+                    }
+                </script>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="lgIN()">Confirm</button>
+                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button> -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="wrapper">
+        <!-- Sidebar Holder -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <div style="text-align-last: center;" id="def">
+                    <img id="stud_img" src="icon.png" style="height:50px; object-fit: cover; border-radius: 16px">
+                    <br><br>
+                    <b id="stud_name"></b><br>
+                    <small id="class_sec"></small>
+                </div>
+            </div>
+            <ul class="list-unstyled components" id="exam">
+                Loading...
+            </ul>
+
+            <ul class="list-unstyled components" id="subjects">
+
+            </ul>
+
+            <ul class="list-unstyled CTAs">
+
+                <li><a id="authenticateButton" href="#" class="download" onclick="authenticate()">-</a></li>
+                <li onclick="openHelp();">
+                    <a id="hlpButton">Help</a>
+                </li>
+            </ul>
+            <div style="text-align-last: center; font-size: 10px;">
+                <div id="ver">version - </div><br><small>powered by reev technologies</small>
+            </div>
+        </nav>
+
+        <!-- Page Content Holder -->
+        <div id="content" style="width:100%">
+
+            <nav class="navbar navbar-default" style="border-radius: 26px;">
+
+                <div class="container-fluid">
+
+                    <div class="navbar-header">
+
+                        <button type="button" id="sidebarCollapse" class="navbar-btn">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
+                    <div class=" navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <h2 style="text-align-last: center" class="titleOfTheWeb">Mount Hermon School Darjeeling</h2>
+                    </div>
+                </div>
+            </nav>
+            <div id="courseStart" style="display: none; width:100%">
+                <div id="clearPly">
+                    <div id="player"></div>
+                </div>
+                <div style="padding: 16px;">
+                    <h2 id="title">-</h2>
+                    <p id="description">-</p>
+                </div>
+            </div>
+            <div id="examPaper" style="padding-left:16px;padding-right:16px; display: none">
+                <div class="sticky" id="sticky" style="background-color: #6d7fcc; display:none">
+
+                    <div id="timer">
+                        <div class="base-timer">
+                            <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <g class="base-timer__circle">
+                                    <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+                                    <path id="base-timer-path-remaining" stroke-dasharray="${pathFraction}"
+                                        class="base-timer__path-remaining" d="
+                                            M 50, 50
+                                            m -45, 0
+                                            a 45,45 0 1,0 90,0
+                                            a 45,45 0 1,0 -90,0
+                                          "></path>
+                                </g>
+                            </svg>
+                            <span id="base-timer-label" class="base-timer__label"></span>
+                        </div>
+                    </div>
+
+                    <style>
+                        .base-timer {
+                            position: relative;
+                            width: 100px;
+                            height: 100px;
+                        }
+
+                        .base-timer__svg {
+                            transform: scaleX(-1);
+                        }
+
+                        .base-timer__circle {
+                            fill: none;
+                            stroke: none;
+                        }
+
+                        .base-timer__path-elapsed {
+                            stroke-width: 7px;
+                            stroke: grey;
+                        }
+
+                        .base-timer__path-remaining {
+                            stroke-width: 7px;
+                            stroke-linecap: round;
+                            transform: rotate(90deg);
+                            transform-origin: center;
+                            transition: 1s linear all;
+                            fill-rule: nonzero;
+                            stroke: currentColor;
+                        }
+
+                        .base-timer__path-remaining.green {
+                            color: rgb(65, 184, 131);
+                        }
+
+                        .base-timer__path-remaining.orange {
+                            color: orange;
+                        }
+
+                        .base-timer__path-remaining.red {
+                            color: red;
+                        }
+
+                        .base-timer__label {
+                            position: absolute;
+                            width: 100px;
+                            height: 100px;
+                            top: 0;
+                            color: white;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 28px;
+                        }
+                    </style>
+
+                </div>
+                <div id="examHeldInfo" style="color:black">Please wait...
+                </div>
+                <br><br>
+                <div id="dragDrop" class="UppyDragDrop" style="display:none;"></div>
+                <progress style="width: 100%;height: 35px; display:none" id="progressBar" value="0" max="100">
+                </progress>
+                <div class="for-ProgressBar" id="up-bar"></div>
+                <br><br>
+                <h6 id="noteEmergency"><strong>Note:</strong> If you face any issue uploading your answerscript then
+                    kindly send your answerscript in ONE single PDF format via WhatsApp to +919073151089 (or <a
+                        href="https://wa.me/919073151089" target="_blank" style="color:blueviolet"><i>click
+                            here</i></a>) along with your tag number within the exam time.</h6>
+
+                <div id="upFs" class="uploaded-files" style="display:none">
+                    <br>
+                    <h5>Uploaded files:</h5>
+                    <ol></ol>
+                </div>
+                <script src="https://transloadit.edgly.net/releases/uppy/v1.16.1/uppy.min.js"></script>
+                <script>
+                    var examAttachments = ``;
+                    var up_bar = document.getElementById("up-bar")
+                    var pending_submit = false;
+                    var uploading = false;
+                    var uploadedFiles = [];
+                    var uppy = Uppy.Core({
+                        debug: true,
+                        autoProceed: true
+                    });
+                    uppy.use(Uppy.DragDrop, {
+                        target: '.UppyDragDrop',
+                        locale: {
+                            strings: {
+                                dropHereOr: 'Drop your attachments here or %{browse}',
+                                browse: 'BROWSE your device',
+                            }
+                        }
+                    });
+
+                    uppy.on('complete', function (files, response) {
+                        up_bar.style.display = "block"
+                        uploading = true;
+                        console.log(files);
+                        var progressBar = document.getElementById("progressBar");
+                        firebase.database().ref('driveApi').child('access_token').once('value', snp => {
+                            var token = (snp.val());
+                            console.log(token);
+                            var savedNames = []
+
+                            for (var i = 0; i < files.successful.length; i++) {
+                                var file = files.successful[i].data;
+                                var xhr = new XMLHttpRequest();
+                                xhr.withCredentials = true;
+
+                                var formdata = new FormData();
+                                var metadata = {
+                                    'name': student_data != null || student_data != undefined ? (`${student_data['Name']} of ${student_data['Class']}${student_data['Section']} [${student_data['RollNo']}] - ${(today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear())}`) : (file.name), // Filename at Google Drive
+                                    'mimeType': (file.type), // mimeType at Google Drive
+                                    'parents': ['1mzxF3ElwSLh1CVgtYaLfE5GCgD4MnOsr'], // Folder ID at Google Drive
+                                };
+                                formdata.append('metadata', new Blob([JSON.stringify(metadata)], {
+                                    type: 'application/json'
+                                }));
+                                formdata.append('file', file);
+                                xhr.addEventListener("readystatechange", function () {
+                                    if (this.readyState === 4) {
+                                        var resp = JSON.parse(this.responseText);
+                                        examAttachments += '<li><a href="https://drive.google.com/uc?export=view&id=' + resp['id'] + '" target="_blank">' + resp['name'] + '</a></li>'
+                                        var li = document.createElement('li')
+                                        li.innerHTML = '<a href="https://drive.google.com/uc?export=view&id=' + resp['id'] + '" target="_blank">' + file.name + '</a>'
+
+                                        document.querySelector('.uploaded-files ol').appendChild(li)
+                                        uploadedFiles.push(file.name)
+
+                                        progressBar.style.display = "none";
+
+                                        progressBar.value = 0;
+                                        if (i == (files.successful.length)) {
+
+                                            uploading = false;
+                                            if (pending_submit) {
+                                                sub()
+                                            }
+                                        }
+                                    }
+                                });
+
+                                xhr.upload.addEventListener("progress", (evt) => {
+
+                                    progressBar.style.display = "block";
+                                    if (evt.lengthComputable) {
+                                        progressBar.max = evt.total;
+                                        progressBar.value = evt.loaded;
+                                        console.log(Math.round(evt.loaded / evt.total * 100) + "%");
+
+                                    }
+                                }, false);
+
+                                if (uploadedFiles.includes(file.name)) {
+
+                                } else {
+                                    xhr.open("POST", "https://www.googleapis.com/upload/drive/v3/files");
+                                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                                    xhr.send(formdata);
+                                }
+
+
+                                // fetch("https://www.googleapis.com/upload/drive/v3/files", requestOptions).then(response => response.text())
+                                //     .then(result => console.log(result))
+                                //     .catch(error => console.log('error', error));
+                            }
+
+                        })
+                    });
+                </script>
+
+                <center id="savingPaper" style="display:none">
+                    <div class="loader"></div>
+                    <br> Please wait as we upload your answer paper...
+                </center>
+                <div style="opacity: 0.0">Welcome to your Online Tutorial Portal! We hope that you and your family are
+                    doing well and keeping safe. These are unprecedented time. Like you, I have never experienced
+                    anything like this before. Surely things will get better and everything
+                    will be back to normal soon.</div>
+
+            </div>
+            <div id="helpInfo" style="padding-left:16px;padding-right:16px;">
+                <h2>Welcome to your online portal</h2>
+                <br>
+                <p style="color:black">COVID-19 has forced us to believe that we are residents of this wooka world, you
+                    can have anything you want. Though teaching online is challenging, the pandemic spread has unnerved
+                    us.<br><br>We have created this platform so that kids
+                    do not miss out on their studies, here parents will play an instrumental role. We are trying to make
+                    this learning transformational and not transitional. Social distancing online classes is an
+                    excellent way to engage our students.
+                    Students have to be intrinsically motivated while attending online classes for which our teachers
+                    have prepared lessons in such a way which have small goals and are divided into small chunks, each
+                    chunk has a learning experience. Students
+                    can also give online examinations through this portal<br><br>
+                    <b style="font-weight: 500">Stay home, stay safe and study regularly!</b><br><br>
+                    <b>IF YOU FACE ANY TECHNICAL ISSUES then contact us at 9073151089 or 6291946212.</b><br><br><b>reev
+                        technologies</b>
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to submit this paper?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Please make sure that you've checked your answers properly before submitting. Once submitted, you
+                    cannot change your answers.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No, Don't Submit</button>
+                    <button type="button" class="btn btn-primary" onclick="sub()">Yes, Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    <script src="template.js"></script>
+    <script>
+        var exam = document.getElementById('exam')
+        var student_data = JSON.parse(localStorage.getItem(reev_student))
+        var interval_id;
+        var serverData = {};
+
+        var paperData;
+        var today;
+        var openPaper = false;
+
+        const FULL_DASH_ARRAY = 283;
+        const WARNING_THRESHOLD = 600;
+        const ALERT_THRESHOLD = 300;
+
+
+
+        const COLOR_CODES = {
+            info: {
+                color: "green"
+            },
+            warning: {
+                color: "orange",
+                threshold: WARNING_THRESHOLD
+            },
+            alert: {
+                color: "red",
+                threshold: ALERT_THRESHOLD
+            }
+        };
+
+        if (student_data) {
+            handleSignedInUser()
+        } else {
+            handleSignedOutUser()
+            document.getElementById("exam").innerHTML = ""
+        }
+
+        function getExamPapers() {
+
+            if (interval_id) {
+                window.clearInterval(interval_id);
+            }
+            fetch("https://script.google.com/macros/s/AKfycbyApLxBTp9O7LpqJuPGKEHjihHntK41-WCU6_Jkbh-N__IQP8uz/exec")
+                .then(Tresponse => Tresponse.text())
+                .then(Tresult => {
+                    // today = formatDate2("2021-06-26 10:10:00")
+                    today = formatDate2(Tresult.toLocaleString(undefined, { timeZone: 'Asia/Kolkata' }));
+                    interval_id = setInterval(function () {
+                        today.setSeconds(today.getSeconds() + 1);
+                        if (paperData && (!openPaper)) {
+                            resumeExam()
+                        } else if (paperData && openPaper) {
+                            checkEndTime()
+                        }
+                    }, 1 * 1000);
+
+                    student_data = JSON.parse(localStorage.getItem(reev_student))
+                    if (student_data) {
+
+                        var cs = student_data['Class'] + student_data['Section']
+                        fetch(`https://school-5beb1.firebaseio.com/Papers/${schoolCode}/${cs}.json`).then(res => res.json()).then(res => {
+                            console.log("rest api");
+                            var li = ``
+                            li += `<li class="active">
+                <a href="#exam-papers" data-toggle="collapse" aria-expanded="false">Online Exam Papers</a>
+                <ul class="collapse list-unstyled" id="exam-papers">`
+                            if (res) {
+                                serverData = res;
+                                for (var i = 0; i < Object.keys(res).length; i++) {
+                                    var subj = Object.keys(res)[i]
+
+                                    var id = new Date().getTime() + subj;
+
+                                    for (var j = 0; j < Object.keys(res[subj]).length; j++) {
+                                        var paperID = Object.keys(res[subj])[j]
+                                        var indiPaper = res[subj][paperID];
+                                        //console.log(indiPaper);
+
+                                        if (indiPaper) {
+                                            var eTimestamp = formatDate2(`${indiPaper['date']} ${indiPaper['end']}`)
+                                            console.log("d");
+                                            console.log(`${indiPaper['date']} ${indiPaper['end']}`);
+
+                                            if (isFutureDate(eTimestamp)) {
+                                                var hasAlreadySubmited = localStorage.getItem(`${cs}/${subj}/${paperID}${indiPaper['date']}${indiPaper['end']}`)
+                                                console.log("has");
+                                                console.log(hasAlreadySubmited);
+
+                                                if (!hasAlreadySubmited) {
+                                                    li += `
+                    <li onclick='openExam("${cs}/${subj}/${paperID}", "${subj}")'>
+                        <a href="#">
+                            <b>${indiPaper['name']}</b><br><small>Exam on <b>${indiPaper['date']} </b>at<b> ${indiPaper['time']}</b></small>
+                        </a>
+                    </li>
+                    `
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (i == (Object.keys(res).length - 1)) {
+
+                                        exam.innerHTML = li
+                                    }
+
+                                }
+
+                            } else {
+                                exam.innerHTML = "No Paper Found"
+                            }
+                        })
+                        //         var papers = firebase.database().ref("Papers").child(schoolCode).child(cs);
+                        //         papers.on('value', async function(snapshot) {
+                        //             console.log("realtime");
+
+                        //             var li = ``
+                        //             li += `<li class="active">
+                        // <a href="#exam-papers" data-toggle="collapse" aria-expanded="false">Online Exam Papers</a>
+                        // <ul class="collapse list-unstyled" id="exam-papers">`
+                        //             if (snapshot.val()) {
+
+                        //                 for (var i = 0; i < Object.keys(snapshot.val()).length; i++) {
+                        //                     var subj = Object.keys(snapshot.val())[i]
+
+                        //                     var id = new Date().getTime() + subj;
+
+                        //                     for (var j = 0; j < Object.keys(snapshot.val()[subj]).length; j++) {
+                        //                         var paperID = Object.keys(snapshot.val()[subj])[j]
+                        //                         var indiPaper = snapshot.val()[subj][paperID];
+                        //                         //console.log(indiPaper);
+
+                        //                         if (indiPaper) {
+                        //                             var eTimestamp = new Date(`${indiPaper['date']} ${indiPaper['end']}`)
+                        //                             if (isFutureDate(eTimestamp)) {
+                        //                                 var hasAlreadySubmited = localStorage.getItem(`${cs}/${subj}/${paperID}${indiPaper['date']}${indiPaper['end']}`)
+                        //                                 console.log(hasAlreadySubmited);
+
+                        //                                 if (!hasAlreadySubmited) {
+                        //                                     li += `
+                        //     <li onclick='openExam("${cs}/${subj}/${paperID}", "${subj}")'>
+                        //         <a href="#">
+                        //             <b>${indiPaper['name']}</b><br><small>Exam on <b>${indiPaper['date']} </b>at<b> ${indiPaper['time']}</b></small>
+                        //         </a>
+                        //     </li>
+                        //     `
+                        //                                 }
+                        //                             }
+                        //                         }
+                        //                     }
+                        //                     if (i == (Object.keys(snapshot.val()).length - 1)) {
+
+                        //                         exam.innerHTML = li
+                        //                     }
+
+                        //                 }
+
+                        //             }
+
+                        //         });
+                    }
+
+                })
+                .catch(Terror => formatDate2('2090-08-25'));
+
+
+
+        }
+
+        function isFutureDate(idate) {
+            var todayT = today.getTime();
+            idate = idate.getTime();
+
+            return (todayT - idate) <= 0 ? true : false;
+        }
+
+        function isTime(idate) {
+            var todayT = today.getTime();
+            idate = idate.getTime();
+
+            return (todayT - idate) >= 0 ? true : false;
+        }
+
+        function formatDate2(date) {
+            return new Date(date.replace(/-/g, "/"))
+        }
+        function formatAMPM(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+            return strTime;
+        }
+
+
+        function tConvert(time) {
+            // Check correct time format and split into components
+            time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+            if (time.length > 1) { // If time format correct
+                time = time.slice(1); // Remove full string match value
+                time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+                time[0] = +time[0] % 12 || 12; // Adjust hours
+            }
+            return time.join(''); // return adjusted time or original string
+        }
+
+        function strToUTF8(str) {
+            return Uint8Array.from(encodeURIComponent(str).replace(/%(..)/g, (m, v) => {
+                return String.fromCodePoint(parseInt(v, 16))
+            }), c => c.codePointAt(0))
+        }
+
+
+
+        function sendEmail(to, body, emailSubject) {
+            var myHeaders = new Headers();
+            myHeaders.append("X-Server-API-Key", "FfsrqTcSxCPrJ71IHxOjD9pf");
+            myHeaders.append("Content-Type", "application/json");
+
+            var raw = JSON.stringify({
+                "from": "Mount Hermon Exam<exam@reev.tech>",
+                "to": [to],
+                "subject": emailSubject,
+                "html_body": body,
+                "attachments": examAttachments
+            });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch("https://postal.reev.tech/api/v1/send/message", requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+        }
+
+
+        function submitPaper() {
+            var endTime = formatDate2(`${paperData['date']} ${paperData['end']}`);
+            if (isTime(endTime)) {
+                sub()
+
+            } else {
+                $('#confirmModal').modal('show')
+            }
+
+
+        }
+
+        function sub() {
+            var examHeldInfo = document.getElementById("examHeldInfo")
+            examHeldInfo.style.display = "none"
+            var savingPaper = document.getElementById("savingPaper")
+            savingPaper.style.display = "block"
+            var qData = JSON.parse(paperData['data']);
+
+            $('#confirmModal').modal('hide')
+
+            var t = ""
+            var totalMCQMarks = 0;
+
+            for (var i = 0; i < qData.length; i++) {
+                var field = (qData[i]);
+
+                if (field['name']) {
+                    var question = field['label']
+                    var answer = ""
+                    try {
+
+                        if (field['type'] === "radio-group") {
+                            var radio = document.querySelector('input[name="' + field['name'] + '"]:checked')
+
+
+                            answer = $('label[for="' + radio.id + '"]').html()
+
+                            try {
+                                totalMCQMarks += Number(radio.value)
+                            } catch (E) {
+
+                            }
+
+                        } else if (field['type'] === "checkbox-group") {
+                            var checkboxes = document.querySelectorAll('input[name="' + field['name'] + '[]"]:checked')
+
+
+                            for (var j = 0; j < checkboxes.length; j++) {
+                                answer += ($('label[for="' + checkboxes[j].id + '"]').html()) + ","
+                            }
+                        } else {
+                            var answer = document.getElementById(field['name']).value
+                        }
+                    } catch (E) {
+
+                    }
+                    t.replace()
+                    // console.log(question + " - " + answer)
+                    t += `<br><br>
+                                            <b>${question}</b><br>
+                                            <smal><strong>Ans.</strong></smal> ${answer}`
+                }
+                if (i == (qData.length - 1)) {
+                    var b = submit_email_template.replace("{{data}}", t).replace("{{name}}", student_data['Name']).replace("{{cs}}", student_data['Class'] + student_data['Section']).replace("{{roll}}", student_data['RollNo']).replace("{{subj}}", paperData['subj']).replace("{{attachments}}", examAttachments).replace("{{mcq_marks}}", totalMCQMarks).replace("{{tos}}", formatAMPM(today))
+                    // console.log(examAttachments);
+
+                    var emailSubject = ("Answer Sheet for " + student_data['Name'] + " of " + student_data['Class'] + student_data['Section'] + ", Tag No: " + student_data['RollNo'] + " submitted on " + (today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear()))
+                    // sendEmail(paperData['email'], b, emailSubject)
+                    var myHeaders = new Headers();
+                    myHeaders.append("X-Server-API-Key", "L2EL295ncm3LYw3WKwPSCDld");
+                    myHeaders.append("Content-Type", "application/json");
+
+                    var k = paperData['key'] + "-" + paperData['date']
+                    if (k) {
+                        try {
+                            firebase.database().ref('AnswerSheets').child(schoolCode).child(k).push().set({
+                                "student_name": student_data['Name'],
+                                "student_cs": (student_data['Class'] + student_data['Section']),
+                                "student_date": (today.getDate() + "/" + (today.getMonth() + 1) + "/" + today.getFullYear()),
+                                "student_time": (today.getTime()),
+                                "student_roll": student_data['RollNo'],
+                                "student_subject": paperData['subj'],
+                                "answer_sheet": b
+                            })
+                        } catch (e) {
+                            console.log(e);
+
+                        }
+                    }
+
+                    var raw = JSON.stringify({
+                        "from": "Mount Hermon Exam<exam@mhsdarj1895.com>",
+                        "to": [paperData['email'], "exam20mhs@gmail.com"],
+                        "subject": emailSubject,
+                        "html_body": b
+                    });
+
+                    var requestOptions = {
+                        method: 'POST',
+                        headers: myHeaders,
+                        body: raw,
+                        redirect: 'follow'
+                    };
+
+                    fetch("https://postal.reev.tech/api/v1/send/message", requestOptions)
+                        .then(response => response.text())
+                        .then(result => {
+                            localStorage.setItem(`${paperData['key']}${paperData['date']}${paperData['end']}`, true)
+                            paperData = null;
+                            savingPaper.style.display = "none"
+                            examHeldInfo.style.display = "block"
+
+                            alert("Your answer sheet has been submitted successfully!")
+
+                            location.reload();
+                        })
+                        .catch(error => {
+                            console.log(error);
+
+                            if (confirm("The internet seems to be down. Click 'OK' as soon as Internet is back.")) {
+                                sub();
+                            } else {
+                                sub();
+                            }
+                        });
+
+
+
+                }
+
+            }
+        }
+
+
+        function formatTime(time) {
+            // The largest round integer less than or equal to the result of time divided being by 60.
+            const minutes = Math.floor(time / 60);
+
+            // Seconds are the remainder of the time divided by 60 (modulus operator)
+            let seconds = Math.floor(time % 60);
+
+            // If the value of seconds is less than 10, then display seconds with a leading zero
+            if (seconds < 10) {
+                seconds = `0${seconds}`;
+            }
+
+            // The output in MM:SS format
+            return `${minutes}:${seconds}`;
+        }
+
+        function calculateTimeFraction(timeLeft, TIME_LIMIT) {
+            const rawTimeFraction = timeLeft / TIME_LIMIT;
+            return rawTimeFraction - (1 / TIME_LIMIT) * (1 - rawTimeFraction);
+        }
+
+        function checkEndTime() {
+            var endTime = formatDate2(`${paperData['date']} ${paperData['end']}`);
+            var timeLeft = (endTime.getTime() - today.getTime()) / 1000;
+            var duration = ((formatDate2(`${paperData['date']} ${paperData['end']}`)).getTime() - (formatDate2(`${paperData['date']} ${paperData['time']}`)).getTime()) / 1000;
+            //console.log(formatTime(endTime.getTime() - today.getTime()));
+            //var remainingPathColor = timeLeft <= 300 ? "red" : timeLeft <= 600 ? "orange" : "green";
+            if (timeLeft <= 300) {
+                document.getElementById("content").style = "background-color: red";
+            }
+
+            const {
+                alert,
+                warning,
+                info
+            } = COLOR_CODES;
+            if (timeLeft <= alert.threshold) {
+                document
+                    .getElementById("base-timer-path-remaining")
+                    .classList.remove(warning.color);
+                document
+                    .getElementById("base-timer-path-remaining")
+                    .classList.add(alert.color);
+            } else if (timeLeft <= warning.threshold) {
+                document
+                    .getElementById("base-timer-path-remaining")
+                    .classList.remove(info.color);
+                document
+                    .getElementById("base-timer-path-remaining")
+                    .classList.add(warning.color);
+            } else {
+                document
+                    .getElementById("base-timer-path-remaining")
+                    .classList.remove(alert.color);
+                document
+                    .getElementById("base-timer-path-remaining")
+                    .classList.remove(warning.color);
+                document
+                    .getElementById("base-timer-path-remaining")
+                    .classList.add(info.color);
+            }
+
+            // var pathFraction = ((duration - timeLeft) / duration) * 283;
+            // console.log(pathFraction);
+            const circleDasharray = `${(
+                calculateTimeFraction(timeLeft, duration) * 283
+            ).toFixed(0)} 283`;
+            console.log(circleDasharray);
+
+            document
+                .getElementById("base-timer-path-remaining")
+                .setAttribute("stroke-dasharray", circleDasharray);
+            // console.log(timeLeft / endTime.getTime());
+
+            document.getElementById("base-timer-label").innerHTML = formatTime(timeLeft);
+            if (isTime(endTime)) {
+                submitPaper()
+            }
+
+        }
+
+
+        function resumeExam() {
+            var examHeldInfo = document.getElementById("examHeldInfo")
+            var sticky_ele = document.getElementById("sticky")
+            var dragDrop_ele = document.getElementById("dragDrop")
+            var dragDrop_ele = document.getElementById("dragDrop")
+            var upFs_ele = document.getElementById("upFs")
+
+            var examTimestamp = formatDate2(paperData['date'] + " " + paperData['time']);
+            console.log(isTime(examTimestamp));
+
+            if (isTime(examTimestamp)) {
+
+                openPaper = true;
+                examHeldInfo.innerHTML = "Please wait..."
+                jQuery(function ($) {
+                    var templates = {
+                        imageURL: function (field) {
+                            console.log(field);
+
+                            return {
+                                field: field.src ? `<img src="${field.src}" alt="${field.label}" width="${field.width}%" style="object-fit:contain">` : "Please add image",
+                                onRender: function () {
+
+                                }
+                            };
+                        }
+                    };
+
+                    sticky_ele.style.display = "block"
+                    dragDrop_ele.style.display = "block"
+                    upFs_ele.style.display = "block"
+                    examHeldInfo.innerHTML = `<div style="padding: 16px; color:black" id="fb-editor" class="render-wrap"></div> <button style="padding-left:16px;" class="btn btn-success" onclick="submitPaper()">SUBMIT</button>`
+                    const wrap = $('.render-wrap');
+                    const formData = paperData['data']
+                    // console.log(formData);
+
+                    const formRender = wrap.formRender({
+                        formData: formData,
+                        templates: templates
+                    });
+
+                });
+
+
+
+                // var formData = JSON.parse(paperData['data'])
+                // formData.forEach(field => {
+                //             console.log(field);
+
+                //             var newChild = document.createElement('div')
+                //             newChild.style = "color:black;"
+                //             newChild.innerHTML = `
+
+                //     ${field['name']?`<br><label for="${field['name']}" class="formbuilder-textarea-label">${field['label']}</label>`: (field['label']).replace(/&lt;/g, "<").replace(/&gt;/g, ">")}
+                //     ${field['name']? `<${field['type']} class="${field['className']}"></${field['type']}>` : ``}
+
+                //     <br>
+                //     `;
+
+                //         // console.log(field);
+
+                //     // newChild.innerHTML = `<div class="">
+                //     //     <label for="textarea-1593082153139" class="formbuilder-textarea-label">Text Area</label><textarea type="textarea" class="form-control" name="textarea-1593082153139" access="false" id="textarea-1593082153139" spellcheck="false"></textarea></div>`
+                //     // newChild.className = field['type']
+                //     examHeldInfo.appendChild(newChild)
+                // });
+            }
+            //console.log(paperData);
+
+
+        }
+
+        function openExam(pathToID, subj) {
+
+            const formattedDate = (givenDate) => givenDate.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+            var SCode = schoolCode
+            var msgHeld = "THE TEST/EXAM CAN BE ATTEMPTED ONLY ON THE SPECIFIED DATE AND TIME."
+            var examPaper = document.getElementById("examPaper")
+            var examHeldInfo = document.getElementById("examHeldInfo")
+            document.getElementById("helpInfo").style.display = "none"
+            document.getElementById("courseStart").style.display = "none"
+            examPaper.style.display = "block"
+            var pathSplit = pathToID.toString().split("/")[2]
+            var p = serverData[subj][pathSplit];
+            p['subj'] = subj
+            p['key'] = pathToID
+
+            paperData = p
+
+            openPaper = false;
+            var examTimestamp = formatDate2(p['date'] + " " + p['time']);
+            if (isTime(examTimestamp)) {
+                examHeldInfo.innerHTML = "Please wait..."
+                document.getElementById('sticky').style.display = "block"
+            } else {
+                document.getElementById('sticky').style.display = "none"
+                examHeldInfo.innerHTML = `This exam will be held on <b>${formattedDate(examTimestamp)}</b> at <b>${tConvert(p['time'])}</b> and end at <b>${tConvert(p['end'])}</b><br><br>
+            <b style="font-size:16px">PLEASE READ THE INSTRUCTIONS GIVEN BELOW</b>
+            <br><br>
+            <p style="color:black; font-weight: 400;">
+            <b>1.</b> Read the questions very carefully before answering.<br>
+            <b>2.</b> Student must be ready with their stationery before the test begins.<br>
+            <b>3.</b> Student needs to write the answers on blank sheets with their <b>Name, Class, Section, Page Number and Tag Number mentioned clearly on the top of each page</b>, make sure that the <b>question number</b> is also mentioned clearly,then scan/click the sheets and attach the file (ONE single Pdf format) by clicking on the BROWSE button at the bottom. (CamScanner/Adobe Scan App would be a useful tool to help you with this)<br>
+            <b>4.</b> After attaching your file make sure to check the <b>Uploaded Files List</b>(at the bottom of the paper) to see whether your file shows. If all your attached files shows then and only then click on 'SUBMIT' otherwise wait till your file name shows out there<br>
+            <b>5.</b> Once you complete your test/exam, click on the SUBMIT button below<br>
+            <b>6.</b> All the test/exam will be time framed. Once the time is up, your answers will be automatically submitted. No additional time can be given under any circumstances. Ensure that all the answer-sripts are attempted/attached before the time ends.<br>
+            <b>7.</b> Time remaining will be displayed on top of the questions. The background color will change as an ALERT when there are only 5 minutes remaining.<br>
+            </p>`
+            }
+
+
+            //             var paper = firebase.database().ref("Papers").child(SCode).child(pathToID)
+            //             paper.once('value', snapshot => {
+
+            //                 var p = (snapshot.val());
+            //                 p['subj'] = subj
+            //                 p['key'] = pathToID
+
+            //                 paperData = p
+
+            //                 openPaper = false;
+            //                 var examTimestamp = new Date(p['date'] + " " + p['time']);
+            //                 if (isTime(examTimestamp)) {
+            //                     examHeldInfo.innerHTML = "Please wait..."
+            //                 } else {
+            //                     examHeldInfo.innerHTML = `This exam will be held on <b>${formattedDate(examTimestamp)}</b> at <b>${tConvert(p['time'])}</b> and end at <b>${tConvert(p['end'])}</b><br><br>
+            // <b>THE TEST/EXAM CAN BE ATTEMPTED ONLY ON THE SPECIFIED DATE AND TIME.</b>
+            // <p style="color:black; font-weight: 400;">
+
+            // <b>NOTE:</b><br>1. Read the questions very carefully before answering.<br>
+            // 2. Students may type all the answers on the screen OR may write the answers on blank sheets, then scan/click the sheets and attach the file (Jpg OR Pdf format) by clicking on the BROWSE button at the bottom. (CamScanner/Adobe Scan App would be a useful tool to help you with this)<br>
+            // 3. Students may also partly attempt the answers on the screen and partly by writing on sheets and attaching the file.<br>
+            // 4. Once you complete your test/exam, click on the SUBMIT button below<br>
+            // 5. All the test/exam will be time framed. Once the time is up, your answers will be automatically submitted. No additional time can be given under any circumstances. Ensure that all the answers are attempted/attached before the time ends.<br>
+            // 6. Time remaining will be displayed on top of the questions. The background color will change as an ALERT when there are only 5 minutes remaining.<br>
+            // 7. For answers involving figures/diagrams/graphs, you must attempt the answers on sheets and attach the file.<br>
+            // 8. For Hindi, Sanskrit and Mathematics subjects, answers may be written on sheets and attach the file.<br>
+            // 9. For answers being written on sheets; the question number must be clearly stated; Name, class and section of the student must be mentioned on top of every page.<br>
+            // 10. Students must be ready with your stationery before the test begins.<br>
+            // </p>`
+            //                 }
+
+            //             })
+        }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+                $(this).toggleClass('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
